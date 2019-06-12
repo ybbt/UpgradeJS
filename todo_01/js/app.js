@@ -8,17 +8,19 @@
 //     document.body.appendChild(template);
 // }
 
-function addTask() {
-    let template = TEMPLATE_LI.cloneNode(true);
+// function addTask() {
+//     let template = TEMPLATE_LI.cloneNode(true);
 
-    template.querySelector('._text').innerText = document.querySelector('#taskValue').value;
-    document.querySelector('#taskValue').value = '';
-    template.querySelector('._delete').onclick = function () {
-        this.closest('li').remove();
-    }
+//     template.querySelector('._text').innerText = document.querySelector('#taskValue').value;
+//     document.querySelector('#taskValue').value = '';
+//     template.querySelector('._delete').onclick = function () {
+//         this.closest('li').remove();
+//     }
 
-    document.querySelector('#tasksIncompleted').appendChild(template);
-}
+//     document.querySelector('#tasksIncompleted').appendChild(template);
+// }
+
+// initialize();
 
 function ToDoList(name, contSelector) {
 
@@ -32,10 +34,7 @@ function ToDoList(name, contSelector) {
         template.querySelector('#buttonAdd').addEventListener('click', addTask);
         let tmplUl = template.querySelector('#tasksIncompleted');
         tmplUl.id += name;
-        
-        // let tmplt = template.querySelector('#tplToDoList');
-        // tmplt.id += name;
-        
+                
         template.querySelector('.container').classList.add('_container'+name);
         template.querySelector('._taskValue').classList.add('_taskValue'+name);
         var container = null;
@@ -49,9 +48,6 @@ function ToDoList(name, contSelector) {
 
     function addTask() {
         let template = TEMPLATE_LI.cloneNode(true);
-// console.log( document.querySelector('._taskValue'));
-
-
 
         template.querySelector('._text').innerText = document.querySelector('._taskValue'+name).value;
         document.querySelector('._taskValue'+name).value = '';
@@ -63,7 +59,6 @@ function ToDoList(name, contSelector) {
     }
 }
 
-// initialize();
 
 let toDoListFirst = new ToDoList("First");
 // toDoListFirst.initialize();
