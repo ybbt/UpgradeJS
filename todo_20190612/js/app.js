@@ -92,7 +92,7 @@ function Collection (){
 
 function EventObserver(){
 
-    observers = []
+    let observers = []
 
     this.subscribe = function(fn) {
         observers.push(fn)
