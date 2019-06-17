@@ -1,11 +1,14 @@
 function Events () {
-    const LISTENERS = [];
+    const LISTENERS = {};
     return {
-        on(/* newItem,  */fn){
-            LISTENERS.push(fn);
+        on(newItem, fn){
+            if (LISTENERS[newItem] == undefined){
+                LISTENERS[newItem] = [];
+            }
+            LISTENERS[newItem].push(fn);
         },
-        trigger(/* newItem */){
-            LISTENERS.forEach(callback => callback());
+        trigger(newItem){
+            LISTENERS[newItem].forEach(callback => callback());
         }
     };
 }
@@ -43,12 +46,12 @@ function Collection() {
     this.add = function(string) {
         LIST.push(string);
         // change();
-        this.trigger();
+        this.trigger("change");
     };
     this.remove = function(index) {
         LIST.splice(index, 1);
         // change();
-        this.trigger();
+        this.trigger("change");
     };
     this.getList = function() {
         return LIST.slice();
@@ -100,7 +103,7 @@ function TODO () {
 
     document.body.appendChild(TEMPLATE_CURRENT);
     
-    MODEL.on(render);
+    MODEL.on("change", render);
     
 }
 
