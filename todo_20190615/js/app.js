@@ -8,6 +8,10 @@ function Events () {
             LISTENERS[newItem].push(fn);
         },
         trigger(newItem){
+            if (LISTENERS[newItem] == undefined){
+                console.error("нема такої події");
+                return;
+            }
             LISTENERS[newItem].forEach(callback => callback());
         }
     };
@@ -40,33 +44,61 @@ function Events () {
 //         // }
 //     }
 // }
-function Collection() {
-    const LIST = [];
+
+// function Collection() {
+//     const LIST = [];
     
-    this.add = function(string) {
-        LIST.push(string);
-        // change();
-        this.trigger("change");
-    };
-    this.remove = function(index) {
-        LIST.splice(index, 1);
-        // change();
-        this.trigger("change");
-    };
-    this.getList = function() {
-        return LIST.slice();
-    };
+//     this.add = function(string) {
+//         LIST.push(string);
+//         this.trigger("change");
+//     };
+//     this.remove = function(index) {
+//         LIST.splice(index, 1);
+//         this.trigger("change");
+//     };
+//     this.getList = function() {
+//         return LIST.slice();
+//     };
     
 
-}
-Collection.prototype = new Events();
+// }
+// Collection.prototype = new Events();
 
+const CollectionSingleton = (function() {
+    let instance;
+    
+    function Collection() {
+        const LIST = [];
+        
+        this.add = function(string) {
+            LIST.push(string);
+            this.trigger("change");
+        };
+        this.remove = function(index) {
+            LIST.splice(index, 1);
+            this.trigger("change");
+        };
+        this.getList = function() {
+            return LIST.slice();
+        };
+    }
+    Collection.prototype = new Events();
 
+    return {
+      getInstance: function() {
+        if(!instance) {
+          instance = new Collection();
+        }
+        return instance;
+      }
+    }
+  })();
 
 function TODO () {
 
     // this is a model
-    let MODEL = new Collection();
+    // let MODEL = new Collection();
+    let MODEL = new CollectionSingleton.getInstance();
     
     const TEMPLATE_TODO = document.querySelector('#tplToDoList').content;
     const TEMPLATE_LI = document.querySelector('#tplItem').content;
@@ -107,4 +139,5 @@ function TODO () {
     
 }
 
+new TODO();
 new TODO();
