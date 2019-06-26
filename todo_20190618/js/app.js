@@ -49,11 +49,11 @@ class Collection extends Events {
     }
     
     static getInstance(){
-        if(this.#INSTANCE){
-            return this.#INSTANCE;
+        if(!this.#INSTANCE){
+            /* return */ this.#INSTANCE = new Collection();
         }
 
-        return this.#INSTANCE = new Collection();
+        return this.#INSTANCE;
     }
 }
 
