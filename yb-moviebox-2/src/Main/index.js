@@ -83,7 +83,7 @@ class Page extends React.Component{
           {this.state.movies.map(item => {
           return (
             <div key={item.id} className={style.film}>
-              <Film src={item.poster_path} name={item.title} genre={item.genre_ids.map(id => this.state.genres[id])}/>
+              <Film src={item.backdrop_path} name={item.title} genre={item.genre_ids.map(id => this.state.genres[id])}/>
             </div>
             )
           })}

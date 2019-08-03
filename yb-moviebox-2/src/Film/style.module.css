@@ -8,11 +8,26 @@
     flex-basis: 500px;
     flex-grow: 0; */
     width: 500px;
+    box-shadow: 0 3px 25px rgba(0,0,0,0.5); /* Параметры тени */
+}
+
+.imageContainer {
+    width: 500px;
+    height: 750px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.image {
+    height: 100%;
 }
 
 .desc {
     display: flex;
     flex-direction: column;
+    /* margin-bottom: 15px;*/
+    margin: 0 25px 25px 25px; 
 }
 
 .name{
@@ -21,6 +36,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0;
 }
 
 .genres {
@@ -30,6 +46,10 @@
     overflow: hidden;
     width: 100%;
     
+}
+
+.name, .genres {
+    padding-top: 25px;
 }
 
 .genres>span:not(:last-child):after{
