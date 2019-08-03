@@ -1,20 +1,14 @@
 import React from 'react';
 
-import { Route, Link } from "react-router-dom";
+import { /* Link */ NavLink} from "react-router-dom";
 
 import style from './style.module.css'
 
 function Pagenation(props) {
-    // console.log(props.pages);
-    // let pagesArr = [];
-    // for (let index = 1; index <= props.pages; index++) {
-    //     pagesArr.push(index);
-    // }
-    // console.log(pagesArr);
+
     return (
-      <div>
-        {/* {pagesArr.map((item, index) => {return <a href="./" key={index} className={style.pages}>{item}</a>})} */}
-        {props.pages.map((item, index) => {return <Link to={`/${item}`} key={index} className={style.pages}>{item}</Link>})}
+      <div className={style.pages}>
+        {props.pages.map((item, index) => {return <NavLink to={`/${item}`} key={index} className={style.page} activeClassName={style.active}>{item}</NavLink>})}
       </div>
     );
   }

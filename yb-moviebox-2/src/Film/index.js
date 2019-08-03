@@ -1,17 +1,19 @@
 import React from 'react';
 
-// import style from './style.module.css'
+import style from './style.module.css'
 
 function Film(props) {
     return (
       
-      <div>
+      <div className={style.film}>
         <img src={`https://image.tmdb.org/t/p/w500${props.src}`}  alt="sorry"/>
-        <h3>{props.name}</h3>
-        <div>
-          {props.genre.map((item, id) => {
-            return (<span key={id}>{`${item}, `}</span>)
-          })}
+        <div className={style.desc}>
+          <h3 className={style.name}>{props.name}</h3>
+          <div className={style.genres}>
+            {props.genre.map((item, id) => {
+              return (<span key={id} >{`${item}`}</span>)
+            })}
+          </div>
         </div>
       </div>
     );
