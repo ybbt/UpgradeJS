@@ -35,7 +35,7 @@ class Page extends React.Component{
 
   state = { 
     movies: [],
-    voteAvarage: 0,
+    // voteAvarage: 0,
     pages: 1, 
     genres: {},
   };
@@ -75,8 +75,9 @@ class Page extends React.Component{
   }
 
   componentDidUpdate(prevProps) {
-    console.log(this.props.match.params.page);
+
     if (prevProps.match.params.page !== this.props.match.params.page) {
+      console.log(this.props.match.params.page);
       this.ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${this.props.match.params.page}`, this.setStateMovies.bind(this));
 
       this.ApiService('https://api.themoviedb.org/3/genre/movie/list?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA', this.setStateGenres.bind(this));

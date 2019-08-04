@@ -14,14 +14,27 @@ function Pagination(props) {
       pagesArr.push({index : index, view : index});
     }
 
-    const pagesBefor = 3;
+    const pagesCentral = 3;
     const pagesAfter = 2;
-    const allPages = pagesBefor + pagesAfter;
+    const allPages = pagesCentral + 2;
 
     if (pages > allPages) {
-      if (activePage > pagesBefor && activePage < pages - (allPages-1)) {
-        for (let index = 0; index < pagesBefor; index++) {
-          pageArrResult[index + 1] = pagesArr[(+activePage + 1) - (pagesBefor - index)];
+      if (activePage > pagesCentral-1 && activePage < pages - (pagesCentral-2)) {
+        for (let index = 0; index < pagesCentral; index++) {
+          pageArrResult[index + 3] = pagesArr[(+activePage + 1) - (pagesCentral - index)];
+        }
+        // for (let index = 0; index < pagesAfter; index++) {
+        //   pageArrResult[index + allPages] = pagesArr[pagesArr.length/* -1 */ - (pagesAfter - index)];
+        // }
+        pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
+        pageArrResult[1] = pagesArr[0];
+        pageArrResult[2] = {index : pageArrResult[3].index - 1, view : "..."};
+        pageArrResult[6] = {index : pageArrResult[5].index + 1, view : "..."};
+        pageArrResult[7] = pagesArr[pagesArr.length-1];
+        pageArrResult[8] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
+      } else if (activePage <= pagesCentral-1){        
+        for (let index = 0; index < pagesCentral; index++) {
+          pageArrResult[+index + 1] = pagesArr[index];
         }
         for (let index = 0; index < pagesAfter; index++) {
           pageArrResult[index + allPages] = pagesArr[pagesArr.length/* -1 */ - (pagesAfter - index)];
@@ -29,25 +42,21 @@ function Pagination(props) {
         pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
         pageArrResult[4] = {index : pageArrResult[3].index + 1, view : "..."};
         pageArrResult[7] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
-      } else if (activePage <= pagesBefor){
-        for (let index = 0; index < allPages; index++) {
-          pageArrResult[+index + 1] = pagesArr[index];
+      } else if (activePage >= pages - (pagesCentral-2)){
+        for (let index = 0; index < pagesCentral; index++) {
+          pageArrResult[+index + 4] = pagesArr[pagesArr.length/* -1 */ - (pagesCentral - index)];
+        }
+        for (let index = 0; index < pagesAfter; index++) {
+          pageArrResult[index + 1] = pagesArr[index];
         }
         pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
-        pageArrResult[6] = {index : pageArrResult[5].index + 1, view : "..."};
-        pageArrResult[7] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
-      } else if (activePage >= pages - (allPages-1)){
-        for (let index = 0; index < allPages; index++) {
-          pageArrResult[+index + 2] = pagesArr[pagesArr.length/* -1 */ - (allPages - index)];
-        }
-        pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
-        pageArrResult[1] = {index : pageArrResult[2].index - 1, view : "..."};
+        pageArrResult[3] = {index : pageArrResult[4].index - 1, view : "..."};
         pageArrResult[7] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
       }
     } else  {
       pageArrResult = pagesArr;
     }
-    
+
     // pageArrResult = pagesArr;
     return pageArrResult;
   }
