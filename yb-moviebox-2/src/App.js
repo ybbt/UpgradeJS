@@ -4,6 +4,7 @@ import React from 'react';
 
 import Header from './Header';
 import Main from './Main';
+import Footer from './Footer';
 import style from './App.module.css'
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
     <div className={style.App}>
       <Header/>
       <Main/>
-      {/* <Footer/> */}
+      <Footer/>
     </div>
   );
 }
