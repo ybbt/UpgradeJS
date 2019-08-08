@@ -6,64 +6,96 @@ import style from './style.module.css'
 
 function Pagination(props) {
 
-  function setPagination(pages, activePage){
-    let pageArrResult = [];
-    let pagesArr = [];
+  function setPagination(_pages, _activePage){
+    const pages = +_pages;
+    const activePage = +_activePage;
 
-    for (let index = 1; index <= pages; index++) {
-      pagesArr.push({index : index, view : index});
+    const visiblePages = 3;
+    const firstEndVisiblePage = 2;
+    const halfVisiblePages = Math.floor(visiblePages/2);
+
+
+    let arrAllPages = [];
+
+    let tempArrFirstPages = [];
+    let tempArrLastPages = [];
+    let tempArrVisiblePages = [];
+
+    let resultArrPages = []; 
+
+    //  < visiblePages ... firstEndVisiblePage >
+
+    //  < 1 -2- 3 ... 24 25 > 
+
+
+    //  < firstEndVisiblePage ... visiblePages ... firstEndVisiblePage >
+
+    //  < 1 2 ... 10 -11- 12 ... 24 25 >
+
+
+    //  < firstEndVisiblePage ... visiblePages >
+
+    //  < 1 2 ... 23 -24- 25 >
+
+    for(let i = 0; i < pages; i++){
+      arrAllPages.push({text: i + 1, page: i+1});
     }
 
-    const pagesCentral = 3;
-    const pagesAfter = 2;
-    const allPages = pagesCentral + 2;
+    if(pages > 8){
+      if(activePage > firstEndVisiblePage+halfVisiblePages+1 && activePage <= (pages - (firstEndVisiblePage+halfVisiblePages+1))){
+          for(let i = 0; i < firstEndVisiblePage; i++){
+              tempArrFirstPages.push(arrAllPages[i]);
 
-    if (pages > allPages) {
-      if (activePage > pagesCentral-1 && activePage < pages - (pagesCentral-2)) {
-        for (let index = 0; index < pagesCentral; index++) {
-          pageArrResult[index + 3] = pagesArr[(+activePage + 1) - (pagesCentral - index)];
-        }
-        // for (let index = 0; index < pagesAfter; index++) {
-        //   pageArrResult[index + allPages] = pagesArr[pagesArr.length/* -1 */ - (pagesAfter - index)];
-        // }
-        pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
-        pageArrResult[1] = pagesArr[0];
-        pageArrResult[2] = {index : pageArrResult[3].index - 1, view : "..."};
-        pageArrResult[6] = {index : pageArrResult[5].index + 1, view : "..."};
-        pageArrResult[7] = pagesArr[pagesArr.length-1];
-        pageArrResult[8] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
-      } else if (activePage <= pagesCentral-1){        
-        for (let index = 0; index < pagesCentral; index++) {
-          pageArrResult[+index + 1] = pagesArr[index];
-        }
-        for (let index = 0; index < pagesAfter; index++) {
-          pageArrResult[index + allPages] = pagesArr[pagesArr.length/* -1 */ - (pagesAfter - index)];
-        }
-        pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
-        pageArrResult[4] = {index : pageArrResult[3].index + 1, view : "..."};
-        pageArrResult[7] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
-      } else if (activePage >= pages - (pagesCentral-2)){
-        for (let index = 0; index < pagesCentral; index++) {
-          pageArrResult[+index + 4] = pagesArr[pagesArr.length/* -1 */ - (pagesCentral - index)];
-        }
-        for (let index = 0; index < pagesAfter; index++) {
-          pageArrResult[index + 1] = pagesArr[index];
-        }
-        pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
-        pageArrResult[3] = {index : pageArrResult[4].index - 1, view : "..."};
-        pageArrResult[7] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
+              tempArrLastPages.push(arrAllPages[(pages-1)-(firstEndVisiblePage-1) + i]);
+          }
+          for(let i = 0; i < visiblePages; i++){
+              tempArrVisiblePages.push(arrAllPages[((activePage-1)-halfVisiblePages) + i]);
+          }
+          tempArrVisiblePages.unshift({
+            text: '...', 
+            page: (activePage-visiblePages) < 1 ? 1 : (activePage-visiblePages),
+          });
+          tempArrVisiblePages.push({
+            text: '...', 
+            page: ((activePage+visiblePages) > pages) ? tempArrVisiblePages[visiblePages-1].page : (activePage+visiblePages),
+          });
+      } else if (activePage <= firstEndVisiblePage+halfVisiblePages+1) {
+          for(let i = 0; i < firstEndVisiblePage; i++){
+              tempArrLastPages.push(arrAllPages[(pages-1)-(firstEndVisiblePage-1) + i]);
+          }
+          for(let i = 0; i < activePage+halfVisiblePages; i++){
+              tempArrVisiblePages.push(arrAllPages[i]);
+          }
+          tempArrVisiblePages.push({
+            text: '...', 
+            page: ((activePage+visiblePages) > pages) ? tempArrVisiblePages[visiblePages-1].page : (activePage+visiblePages),
+          });
+          
+      } else if(activePage > (pages - (firstEndVisiblePage+halfVisiblePages+1))){
+          for(let i = 0; i < firstEndVisiblePage; i++){
+              tempArrFirstPages.push(arrAllPages[i]);   
+          }
+          for(let i = 0; i < (pages-activePage)+halfVisiblePages+1; i++){
+              tempArrVisiblePages.push(arrAllPages[(activePage-halfVisiblePages-1)+i]);
+          }
+          tempArrVisiblePages.unshift({
+            text: '...', 
+            page: (activePage-visiblePages) < 1 ? 1 : (activePage-visiblePages),
+          });
       }
-    } else  {
-      pageArrResult = pagesArr;
-    }
 
-    // pageArrResult = pagesArr;
-    return pageArrResult;
+      resultArrPages = (new Array({text: '<', page: activePage-1})).concat(tempArrFirstPages, tempArrVisiblePages, tempArrLastPages, (new Array({text: '>', page: activePage+1})));
+
+    } else {
+      resultArrPages = arrAllPages;
+    }
+    
+    return resultArrPages;
   }
 
   return (
     <div className={style.pages}>
-      {setPagination(props.pages, props.activePage).map((item, index) => {return <NavLink to={`/${item.index}`} key={index} className={style.page} activeClassName={style.active}>{item.view}</NavLink>})}
+      {setPagination(props.pages, props.activePage).map((item, index) => {return <NavLink to={`/${item.page}`} key={index} className={style.page} activeClassName={style.active}>{item.text}</NavLink>})}
     </div>
   );
 }
