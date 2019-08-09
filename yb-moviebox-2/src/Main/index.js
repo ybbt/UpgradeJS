@@ -97,7 +97,12 @@ class Page extends React.Component{
             )
           })}
         </div>
-        <Pagination pages={this.state.pages} activePage={this.props.match.params.page}/>
+        <Pagination 
+          pages={this.state.pages} 
+          activePage={this.props.match.params.page}
+          visiblePages = {4}
+          firstEndVisiblePage = {2}
+        />
       </div>
     );
   }

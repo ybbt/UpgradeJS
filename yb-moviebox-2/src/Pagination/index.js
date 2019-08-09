@@ -4,18 +4,25 @@ import { /* Link */ NavLink} from "react-router-dom";
 
 import style from './style.module.css'
 
-function Pagination(props) {
+class Pagination extends React.Component{
 
-  function setPagination(_pages, _activePage){
-    const pages = +_pages;
-    const activePage = +_activePage;
+  resultArrPages = [];
 
-    const visiblePages = 3;
-    const firstEndVisiblePage = 2;
+
+
+  componentDidUpdate() {    
+
+    this.resultArrPages = this.setPagination(+this.props.pages, +this.props.activePage, +this.props.visiblePages, +this.props.firstEndVisiblePage);
+    
+  }
+
+  setPagination(pages, activePage, _visiblePages, firstEndVisiblePage){
+    
+    const allArrPages = [];
+
+    const visiblePages = _visiblePages%2 ? _visiblePages+1 : _visiblePages;
+ 
     const halfVisiblePages = Math.floor(visiblePages/2);
-
-
-    let arrAllPages = [];
 
     let tempArrFirstPages = [];
     let tempArrLastPages = [];
@@ -38,18 +45,19 @@ function Pagination(props) {
     //  < 1 2 ... 23 -24- 25 >
 
     for(let i = 0; i < pages; i++){
-      arrAllPages.push({text: i + 1, page: i+1});
+      allArrPages.push({text: i + 1, page: i+1});
     }
+
 
     if(pages > 8){
       if(activePage > firstEndVisiblePage+halfVisiblePages+1 && activePage <= (pages - (firstEndVisiblePage+halfVisiblePages+1))){
           for(let i = 0; i < firstEndVisiblePage; i++){
-              tempArrFirstPages.push(arrAllPages[i]);
+              tempArrFirstPages.push(allArrPages[i]);
 
-              tempArrLastPages.push(arrAllPages[(pages-1)-(firstEndVisiblePage-1) + i]);
+              tempArrLastPages.push(allArrPages[(pages-1)-(firstEndVisiblePage-1) + i]);
           }
           for(let i = 0; i < visiblePages; i++){
-              tempArrVisiblePages.push(arrAllPages[((activePage-1)-halfVisiblePages) + i]);
+              tempArrVisiblePages.push(allArrPages[((activePage-1)-halfVisiblePages) + i]);
           }
           tempArrVisiblePages.unshift({
             text: '...', 
@@ -61,10 +69,10 @@ function Pagination(props) {
           });
       } else if (activePage <= firstEndVisiblePage+halfVisiblePages+1) {
           for(let i = 0; i < firstEndVisiblePage; i++){
-              tempArrLastPages.push(arrAllPages[(pages-1)-(firstEndVisiblePage-1) + i]);
+              tempArrLastPages.push(allArrPages[(pages-1)-(firstEndVisiblePage-1) + i]);
           }
           for(let i = 0; i < activePage+halfVisiblePages; i++){
-              tempArrVisiblePages.push(arrAllPages[i]);
+              tempArrVisiblePages.push(allArrPages[i]);
           }
           tempArrVisiblePages.push({
             text: '...', 
@@ -73,10 +81,10 @@ function Pagination(props) {
           
       } else if(activePage > (pages - (firstEndVisiblePage+halfVisiblePages+1))){
           for(let i = 0; i < firstEndVisiblePage; i++){
-              tempArrFirstPages.push(arrAllPages[i]);   
+              tempArrFirstPages.push(allArrPages[i]);   
           }
           for(let i = 0; i < (pages-activePage)+halfVisiblePages+1; i++){
-              tempArrVisiblePages.push(arrAllPages[(activePage-halfVisiblePages-1)+i]);
+              tempArrVisiblePages.push(allArrPages[(activePage-halfVisiblePages-1)+i]);
           }
           tempArrVisiblePages.unshift({
             text: '...', 
@@ -84,20 +92,22 @@ function Pagination(props) {
           });
       }
 
-      resultArrPages = (new Array({text: '<', page: activePage-1})).concat(tempArrFirstPages, tempArrVisiblePages, tempArrLastPages, (new Array({text: '>', page: activePage+1})));
+      resultArrPages = (new Array({text: '<', page: ((activePage-1 > 0) ? activePage-1 : 1)})).concat(tempArrFirstPages, tempArrVisiblePages, tempArrLastPages, (new Array({text: '>', page: ((activePage+1 <= pages) ? activePage+1 : pages)})));
 
     } else {
-      resultArrPages = arrAllPages;
+      resultArrPages = allArrPages;
     }
     
     return resultArrPages;
   }
 
-  return (
-    <div className={style.pages}>
-      {setPagination(props.pages, props.activePage).map((item, index) => {return <NavLink to={`/${item.page}`} key={index} className={style.page} activeClassName={style.active}>{item.text}</NavLink>})}
-    </div>
-  );
+  render(){
+    return (
+      <div className={style.pages}>
+        {this.resultArrPages.map((item, index) => {return <NavLink to={`/${item.page}`} key={index} className={style.page} activeClassName={style.active}>{item.text}</NavLink>})}
+      </div>
+    );
+  }
 }
   
-  export default Pagination;
+export default Pagination;
