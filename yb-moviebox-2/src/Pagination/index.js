@@ -23,22 +23,21 @@ function Pagination(props) {
         for (let index = 0; index < pagesCentral; index++) {
           pageArrResult[index + 3] = pagesArr[(+activePage + 1) - (pagesCentral - index)];
         }
-        // for (let index = 0; index < pagesAfter; index++) {
-        //   pageArrResult[index + allPages] = pagesArr[pagesArr.length/* -1 */ - (pagesAfter - index)];
-        // }
+        
         pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
         pageArrResult[1] = pagesArr[0];
         pageArrResult[2] = {index : pageArrResult[3].index - 1, view : "..."};
         pageArrResult[6] = {index : pageArrResult[5].index + 1, view : "..."};
         pageArrResult[7] = pagesArr[pagesArr.length-1];
         pageArrResult[8] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
-      } else if (activePage <= pagesCentral-1){        
+      } else if (activePage <= pagesCentral-1){
         for (let index = 0; index < pagesCentral; index++) {
           pageArrResult[+index + 1] = pagesArr[index];
         }
         for (let index = 0; index < pagesAfter; index++) {
           pageArrResult[index + allPages] = pagesArr[pagesArr.length/* -1 */ - (pagesAfter - index)];
         }
+        // 
         pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
         pageArrResult[4] = {index : pageArrResult[3].index + 1, view : "..."};
         pageArrResult[7] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
