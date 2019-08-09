@@ -100,7 +100,7 @@ class Page extends React.Component{
         <Pagination 
           pages={this.state.pages} 
           activePage={this.props.match.params.page}
-          visiblePages = {4}
+          visiblePages = {3}
           firstEndVisiblePage = {2}
         />
       </div>

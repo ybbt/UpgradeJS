@@ -20,7 +20,7 @@ class Pagination extends React.Component{
     
     const allArrPages = [];
 
-    const visiblePages = _visiblePages%2 ? _visiblePages+1 : _visiblePages;
+    const visiblePages = _visiblePages%2 ? _visiblePages : _visiblePages+1;
  
     const halfVisiblePages = Math.floor(visiblePages/2);
 
