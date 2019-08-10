@@ -1,0 +1,15 @@
+.regionNav {
+    display: flex;
+    justify-content: center;
+}
+
+.navItem{
+    margin: 20px;
+    text-decoration: none;
+    color: gray;
+}
+
+.active {
+    color: white;
+    text-decoration: underline;
+}
