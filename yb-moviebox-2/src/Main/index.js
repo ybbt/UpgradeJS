@@ -12,7 +12,7 @@ class Main extends React.Component{
   render(){
 
     return (
-      <div className={style.main}>
+      <div className={ style.main }>
         <BrowserRouter>
           <Route exact path="/" component={Home} />
           {/* <Redirect from="/" to="/1" /> */}
@@ -92,10 +92,10 @@ class Page extends React.Component{
       <div >
         <div className={style.films}>
           {this.state.movies.map(item => {
-          return (
-            <div key={item.id} className={style.film}>
-              <Film src={item.backdrop_path} year={item.release_date} name={item.title} voteAvarage={item.vote_average} genre={item.genre_ids.map(id => this.state.genres[id])}/>
-            </div>
+            return (
+              <div key={item.id} className={style.film}>
+                <Film src={item.backdrop_path} year={item.release_date} name={item.title} voteAvarage={item.vote_average} genre={item.genre_ids.map(id => this.state.genres[id])}/>
+              </div>
             )
           })}
         </div>
