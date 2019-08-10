@@ -27,7 +27,9 @@ class Main extends React.Component{
 
 function Home (){
   
-    return <Redirect from="/" to="/1" />;
+    return (
+      <Redirect from="/" to="/1" />
+    );
 
 }
 
@@ -97,7 +99,12 @@ class Page extends React.Component{
             )
           })}
         </div>
-        <Pagination pages={this.state.pages} activePage={this.props.match.params.page}/>
+        <Pagination 
+          pages={this.state.pages} 
+          activePage={this.props.match.params.page}
+          visiblePages = {3}
+          firstEndVisiblePage = {2}
+        />
       </div>
     );
   }

@@ -4,67 +4,107 @@ import { /* Link */ NavLink} from "react-router-dom";
 
 import style from './style.module.css'
 
-function Pagination(props) {
+class Pagination extends React.Component{
 
-  function setPagination(pages, activePage){
-    let pageArrResult = [];
-    let pagesArr = [];
+  state = {resultArrPages : []};
 
-    for (let index = 1; index <= pages; index++) {
-      pagesArr.push({index : index, view : index});
+  componentDidUpdate(prevProps) {  
+    if(prevProps.pages !== this.props.pages || prevProps.activePage !== this.props.activePage){
+      this.resultArrPages = this.setPagination(+this.props.pages, +this.props.activePage, +this.props.visiblePages, +this.props.firstEndVisiblePage);
+      this.setState({resultArrPages: this.resultArrPages});
     }
-
-    const pagesCentral = 3;
-    const pagesAfter = 2;
-    const allPages = pagesCentral + 2;
-
-    if (pages > allPages) {
-      if (activePage > pagesCentral-1 && activePage < pages - (pagesCentral-2)) {
-        for (let index = 0; index < pagesCentral; index++) {
-          pageArrResult[index + 3] = pagesArr[(+activePage + 1) - (pagesCentral - index)];
-        }
-        
-        pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
-        pageArrResult[1] = pagesArr[0];
-        pageArrResult[2] = {index : pageArrResult[3].index - 1, view : "..."};
-        pageArrResult[6] = {index : pageArrResult[5].index + 1, view : "..."};
-        pageArrResult[7] = pagesArr[pagesArr.length-1];
-        pageArrResult[8] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
-      } else if (activePage <= pagesCentral-1){
-        for (let index = 0; index < pagesCentral; index++) {
-          pageArrResult[+index + 1] = pagesArr[index];
-        }
-        for (let index = 0; index < pagesAfter; index++) {
-          pageArrResult[index + allPages] = pagesArr[pagesArr.length/* -1 */ - (pagesAfter - index)];
-        }
-        // 
-        pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
-        pageArrResult[4] = {index : pageArrResult[3].index + 1, view : "..."};
-        pageArrResult[7] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
-      } else if (activePage >= pages - (pagesCentral-2)){
-        for (let index = 0; index < pagesCentral; index++) {
-          pageArrResult[+index + 4] = pagesArr[pagesArr.length/* -1 */ - (pagesCentral - index)];
-        }
-        for (let index = 0; index < pagesAfter; index++) {
-          pageArrResult[index + 1] = pagesArr[index];
-        }
-        pageArrResult[0] = {index : pagesArr[0].index, view : "<"};
-        pageArrResult[3] = {index : pageArrResult[4].index - 1, view : "..."};
-        pageArrResult[7] = {index : pagesArr[pagesArr.length-1].index, view : ">"};
-      }
-    } else  {
-      pageArrResult = pagesArr;
-    }
-
-    // pageArrResult = pagesArr;
-    return pageArrResult;
   }
 
-  return (
-    <div className={style.pages}>
-      {setPagination(props.pages, props.activePage).map((item, index) => {return <NavLink to={`/${item.index}`} key={index} className={style.page} activeClassName={style.active}>{item.view}</NavLink>})}
-    </div>
-  );
+  setPagination(pages, activePage, _visiblePages, firstEndVisiblePage){
+    
+    const allArrPages = [];
+
+    const visiblePages = _visiblePages%2 ? _visiblePages : _visiblePages+1;
+ 
+    const halfVisiblePages = Math.floor(visiblePages/2);
+
+    let tempArrFirstPages = [];
+    let tempArrLastPages = [];
+    let tempArrVisiblePages = [];
+
+    let resultArrPages = []; 
+
+    //  < visiblePages ... firstEndVisiblePage >
+
+    //  < 1 -2- 3 ... 24 25 > 
+
+
+    //  < firstEndVisiblePage ... visiblePages ... firstEndVisiblePage >
+
+    //  < 1 2 ... 10 -11- 12 ... 24 25 >
+
+
+    //  < firstEndVisiblePage ... visiblePages >
+
+    //  < 1 2 ... 23 -24- 25 >
+
+    for(let i = 0; i < pages; i++){
+      allArrPages.push({text: i + 1, page: i+1});
+    }
+
+    if(pages > 8){
+      if(activePage > firstEndVisiblePage+halfVisiblePages+1 && activePage <= (pages - (firstEndVisiblePage+halfVisiblePages+1))){
+          for(let i = 0; i < firstEndVisiblePage; i++){
+              tempArrFirstPages.push(allArrPages[i]);
+
+              tempArrLastPages.push(allArrPages[(pages-1)-(firstEndVisiblePage-1) + i]);
+          }
+          for(let i = 0; i < visiblePages; i++){
+              tempArrVisiblePages.push(allArrPages[((activePage-1)-halfVisiblePages) + i]);
+          }
+          tempArrVisiblePages.unshift({
+            text: '...', 
+            page: (activePage-visiblePages) < 1 ? 1 : (activePage-visiblePages),
+          });
+          tempArrVisiblePages.push({
+            text: '...', 
+            page: ((activePage+visiblePages) > pages) ? tempArrVisiblePages[visiblePages-1].page : (activePage+visiblePages),
+          });
+      } else if (activePage <= firstEndVisiblePage+halfVisiblePages+1) {
+          for(let i = 0; i < firstEndVisiblePage; i++){
+              tempArrLastPages.push(allArrPages[(pages-1)-(firstEndVisiblePage-1) + i]);
+          }
+          for(let i = 0; i < activePage+halfVisiblePages; i++){
+              tempArrVisiblePages.push(allArrPages[i]);
+          }
+          tempArrVisiblePages.push({
+            text: '...', 
+            page: ((activePage+visiblePages) > pages) ? tempArrVisiblePages[visiblePages-1].page : (activePage+visiblePages),
+          });
+          
+      } else if(activePage > (pages - (firstEndVisiblePage+halfVisiblePages+1))){
+          for(let i = 0; i < firstEndVisiblePage; i++){
+              tempArrFirstPages.push(allArrPages[i]);   
+          }
+          for(let i = 0; i < (pages-activePage)+halfVisiblePages+1; i++){
+              tempArrVisiblePages.push(allArrPages[(activePage-halfVisiblePages-1)+i]);
+          }
+          tempArrVisiblePages.unshift({
+            text: '...', 
+            page: (activePage-visiblePages) < 1 ? 1 : (activePage-visiblePages),
+          });
+      }
+
+      resultArrPages = (new Array({text: '<', page: ((activePage-1 > 0) ? activePage-1 : 1)})).concat(tempArrFirstPages, tempArrVisiblePages, tempArrLastPages, (new Array({text: '>', page: ((activePage+1 <= pages) ? activePage+1 : pages)})));
+
+    } else {
+      resultArrPages = allArrPages;
+    }
+    return resultArrPages;
+  }
+
+  render(){
+    return (
+      <div className={style.pages}>
+        {this.state.resultArrPages.map((item, index) => {return <NavLink to={`/${item.page}`} key={index} className={style.page} activeClassName={style.active}>{item.text}</NavLink>})}
+      </div>
+    );
+  }
 }
   
-  export default Pagination;
+export default Pagination;
