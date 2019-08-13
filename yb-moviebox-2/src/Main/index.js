@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, Switch } from 'react-router-dom';
 
 import Film from '../Film';
 import Pagination from '../Pagination';
@@ -13,11 +13,9 @@ class Main extends React.Component {
 
     return (
       <div className={style.main}>
-        <BrowserRouter>
-          <Route exact path="/" component={Home} />
-          {/* <Redirect from="/" to="/1" /> */}
-          <Route path="/:page" component={Page} />
-        </BrowserRouter>
+        <Route exact path="/" component={Home} />
+        {/* <Redirect from="/" to="/1" /> */}
+        <Route path="/:region" component={Region} />
       </div>
 
     );
@@ -28,7 +26,24 @@ class Main extends React.Component {
 function Home() {
 
   return (
-    <Redirect from="/" to="/1" />
+    <Redirect from="/" to="/ALL/1" />
+  );
+
+}
+
+function Region(props) {
+
+  return (
+    <Switch>
+      <Route exact path="/:region" component={RegionRedirect} />
+      <Route path="/:region/:page" component={Page} />
+    </Switch>
+  )
+}
+
+function RegionRedirect(props) {
+  return (
+    <Redirect from={`/${props.match.params.region}`} to={`/${props.match.params.region}/1`} />
   );
 
 }
@@ -37,9 +52,9 @@ class Page extends React.Component {
 
   state = {
     movies: [],
-    // voteAvarage: 0,
     pages: 1,
     genres: {},
+    region: "ALL",
   };
 
   ApiService(responseString, setStateFunc) {
@@ -70,17 +85,28 @@ class Page extends React.Component {
 
   componentDidMount() {
     console.log("helly");
+
+    this.setState({ region: this.props.match.params.region });
+
     let page = this.props.match.params.page ? this.props.match.params.page : 1;
-    this.ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${page}`, this.setStateMovies.bind(this));
+    let regionString = this.props.match.params.region === "ALL" ? "" : `&region=${this.props.match.params.region}`
+
+    this.ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${page}${regionString}`, this.setStateMovies.bind(this));
 
     this.ApiService('https://api.themoviedb.org/3/genre/movie/list?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA', this.setStateGenres.bind(this));
   }
 
   componentDidUpdate(prevProps) {
 
-    if (prevProps.match.params.page !== this.props.match.params.page) {
+    if (prevProps.match.params.page !== this.props.match.params.page || prevProps.match.params.region !== this.props.match.params.region) {
       console.log(this.props.match.params.page);
-      this.ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${this.props.match.params.page}`, this.setStateMovies.bind(this));
+      // console.log(this.props.match.params.region);
+      this.setState({ region: this.props.match.params.region });
+
+      let page = this.props.match.params.page ? this.props.match.params.page : 1;
+      let regionString = this.props.match.params.region === "ALL" ? "" : `&region=${this.props.match.params.region}`
+
+      this.ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${page}${regionString}`, this.setStateMovies.bind(this));
 
       this.ApiService('https://api.themoviedb.org/3/genre/movie/list?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA', this.setStateGenres.bind(this));
     }
@@ -102,6 +128,7 @@ class Page extends React.Component {
         <Pagination
           pages={this.state.pages}
           activePage={this.props.match.params.page}
+          region={this.state.region}
           visiblePages={3}
           firstEndVisiblePage={2}
         />

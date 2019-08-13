@@ -1,4 +1,6 @@
-.title {
+.header {
+  display: flex;
+  justify-content: space-between;
   background-color: #EE8686;
   color: white;
   padding-left: 170px;
@@ -7,11 +9,16 @@
   text-transform: uppercase;
   font-weight: 400;
   height: 160px;
-  display: flex;
+  
   align-items: center;
-  justify-content: flex-start;
+  
   width: 100%;
   margin: 0;
+}
+
+.title{
+  display: flex;
+  justify-content: flex-start;
 }
 
 .bold{
