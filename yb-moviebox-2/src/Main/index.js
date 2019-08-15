@@ -58,7 +58,7 @@ class Page extends React.Component {
   };
 
   ApiService(responseString, setStateFunc) {
-    fetch(responseString)
+    fetch(responseString/* , { mode: 'no-cors' } */)
       .then(
         response => response.ok ? response.json() : Promise.reject(Error('Failed to load'))
       )
@@ -120,7 +120,7 @@ class Page extends React.Component {
           {this.state.movies.map(item => {
             return (
               <div key={item.id} className={style.film}>
-                <Film src={item.backdrop_path} year={item.release_date} name={item.title} voteAvarage={item.vote_average} genre={item.genre_ids.map(id => this.state.genres[id])} />
+                <Film id={item.id} src={item.backdrop_path} year={item.release_date} name={item.title} voteAvarage={item.vote_average} genre={item.genre_ids.map(id => this.state.genres[id])} />
               </div>
             )
           })}
