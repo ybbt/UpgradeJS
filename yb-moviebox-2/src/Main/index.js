@@ -13,9 +13,13 @@ class Main extends React.Component {
 
     return (
       <div className={style.main}>
-        <Route exact path="/" component={Home} />
-        {/* <Redirect from="/" to="/1" /> */}
-        <Route path="/:region" component={Region} />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          {/* <Redirect from="/" to="/1" /> */}
+          <Route path="/film/:id_film" component={FilmDetails} />
+          <Route path="/:region" component={Region} />
+        </Switch>
+
       </div>
 
     );
@@ -48,6 +52,53 @@ function RegionRedirect(props) {
 
 }
 
+function ApiService(responseString, setStateFunc) {
+  fetch(responseString/* , { mode: 'no-cors' } */)
+    .then(
+      response => response.ok ? response.json() : Promise.reject(Error('Failed to load'))
+    )
+    .then(
+      setStateFunc,
+      error => console.log(error)
+    );
+}
+
+class FilmDetails extends React.Component {
+  stringPathOrig = 'https://image.tmdb.org/t/p/original/';
+  stringPathAlt = 'http://via.placeholder.com/500x750png?text=image+is+missing';
+  stringPath = null;
+
+  state = {
+    film: {},
+  }
+
+  setStateDetails(result) {
+    this.setState({
+      film: result,
+    })
+  }
+
+  componentDidMount() {
+    console.log("hully");
+    console.log(this.props.match.params.id_film);
+
+    // this.setState({ region: this.props.match.params.region });
+    // let regionString = this.props.match.params.region === "ALL" ? "" : `&region=${this.props.match.params.region}`;
+
+    /* this. */ApiService(`https://api.themoviedb.org/3/movie/${this.props.match.params.id_film}?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA`, this.setStateDetails.bind(this));
+  }
+
+  render() {
+    console.log(this.state.film);
+    this.state.film.poster_path ? this.stringPath = `${this.stringPathOrig}${this.state.film.poster_path}` : this.stringPath = this.stringPathAlt;
+    return (
+      <div className="style.filmDetail">
+        <img src={this.stringPath} alt="sorry" className={style.image} />
+      </div>
+    );
+  }
+}
+
 class Page extends React.Component {
 
   state = {
@@ -56,17 +107,6 @@ class Page extends React.Component {
     genres: {},
     region: "ALL",
   };
-
-  ApiService(responseString, setStateFunc) {
-    fetch(responseString/* , { mode: 'no-cors' } */)
-      .then(
-        response => response.ok ? response.json() : Promise.reject(Error('Failed to load'))
-      )
-      .then(
-        setStateFunc,
-        error => console.log(error)
-      );
-  }
 
   setStateMovies(result) {
     this.setState({
@@ -91,9 +131,9 @@ class Page extends React.Component {
     let page = this.props.match.params.page ? this.props.match.params.page : 1;
     let regionString = this.props.match.params.region === "ALL" ? "" : `&region=${this.props.match.params.region}`
 
-    this.ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${page}${regionString}`, this.setStateMovies.bind(this));
+    /* this. */ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${page}${regionString}`, this.setStateMovies.bind(this));
 
-    this.ApiService('https://api.themoviedb.org/3/genre/movie/list?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA', this.setStateGenres.bind(this));
+    /* this. */ApiService('https://api.themoviedb.org/3/genre/movie/list?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA', this.setStateGenres.bind(this));
   }
 
   componentDidUpdate(prevProps) {
@@ -106,9 +146,9 @@ class Page extends React.Component {
       let page = this.props.match.params.page ? this.props.match.params.page : 1;
       let regionString = this.props.match.params.region === "ALL" ? "" : `&region=${this.props.match.params.region}`
 
-      this.ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${page}${regionString}`, this.setStateMovies.bind(this));
+      /* this. */ApiService(`https://api.themoviedb.org/3/movie/now_playing?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA&page=${page}${regionString}`, this.setStateMovies.bind(this));
 
-      this.ApiService('https://api.themoviedb.org/3/genre/movie/list?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA', this.setStateGenres.bind(this));
+      /* this. */ApiService('https://api.themoviedb.org/3/genre/movie/list?api_key=399a504355fb64900d932566782c9bb5&language=uk-UA', this.setStateGenres.bind(this));
     }
   }
 
